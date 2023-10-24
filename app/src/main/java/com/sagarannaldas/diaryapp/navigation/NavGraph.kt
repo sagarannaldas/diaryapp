@@ -52,6 +52,7 @@ fun NavGraphBuilder.authenticationRoute() {
                     },
                     onFailure = { exception ->
                         messageBarState.addError(exception)
+                        viewModel.setLoadingState(false)
                     }
                 )
             },

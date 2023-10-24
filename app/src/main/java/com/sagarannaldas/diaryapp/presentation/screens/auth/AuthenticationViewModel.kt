@@ -29,7 +29,8 @@ class AuthenticationViewModel : ViewModel() {
             try {
                 val result = withContext(Dispatchers.IO) {
                     App.Companion.create(APP_ID).login(
-                        Credentials.google(tokenId, GoogleAuthType.ID_TOKEN)
+                        Credentials.jwt(tokenId)
+//                        Credentials.google(tokenId, GoogleAuthType.ID_TOKEN)
                     ).loggedIn
                 }
                 withContext(Dispatchers.IO) {
