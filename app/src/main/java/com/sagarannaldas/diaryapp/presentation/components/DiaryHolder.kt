@@ -24,7 +24,7 @@ fun DateHeader(localDate: LocalDate) {
             horizontalAlignment = Alignment.End
         ) {
             Text(
-                text = String.format("%02", localDate.dayOfMonth),
+                text = String.format("%02d", localDate.dayOfMonth),
                 style = TextStyle(
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     fontWeight = FontWeight.Light
