@@ -38,6 +38,7 @@ import com.sagarannaldas.diaryapp.model.Diary
 import com.sagarannaldas.diaryapp.model.Mood
 import com.sagarannaldas.diaryapp.ui.theme.Elevation
 import com.sagarannaldas.diaryapp.util.toInstant
+import io.realm.kotlin.ext.realmListOf
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.Date
@@ -158,5 +159,6 @@ fun DiaryHolderPreview() {
         title = "My Diary"
         description = "hello world"
         mood = Mood.Happy.name
+        images = realmListOf("", "")
     }, onClick = {})
 }
