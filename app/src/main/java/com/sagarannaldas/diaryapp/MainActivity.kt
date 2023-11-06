@@ -13,16 +13,22 @@ import com.sagarannaldas.diaryapp.util.Constants.APP_ID
 import io.realm.kotlin.mongodb.App
 
 class MainActivity : ComponentActivity() {
+    var keepSplashOpen = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen()
-        WindowCompat.setDecorFitsSystemWindows(window,false)
+        installSplashScreen().setKeepOnScreenCondition {
+            keepSplashOpen
+        }
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             DiaryAppTheme {
                 val navController = rememberNavController()
                 SetupNavGraph(
                     startDestination = getStartDestination(),
-                    navController = navController
+                    navController = navController,
+                    onDataLoaded = {
+                        keepSplashOpen = false
+                    }
                 )
             }
         }
