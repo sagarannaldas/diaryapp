@@ -1,5 +1,6 @@
 package com.sagarannaldas.diaryapp.navigation
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.DrawerValue
@@ -27,6 +28,7 @@ import com.sagarannaldas.diaryapp.presentation.screens.auth.AuthenticationViewMo
 import com.sagarannaldas.diaryapp.presentation.screens.home.HomeScreen
 import com.sagarannaldas.diaryapp.presentation.screens.home.HomeViewModel
 import com.sagarannaldas.diaryapp.presentation.screens.write.WriteScreen
+import com.sagarannaldas.diaryapp.presentation.screens.write.WriteViewModel
 import com.sagarannaldas.diaryapp.util.Constants.APP_ID
 import com.sagarannaldas.diaryapp.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
 import com.sagarannaldas.diaryapp.util.RequestState
@@ -58,6 +60,9 @@ fun SetupNavGraph(
         homeRoute(
             navigateToWrite = {
                 navController.navigate(Screen.Write.route)
+            },
+            navigateToWriteWithArgs = {
+                navController.navigate(Screen.Write.passDiaryID(diaryId = it))
             },
             navigateToAuth = {
                 navController.popBackStack()
@@ -124,6 +129,7 @@ fun NavGraphBuilder.authenticationRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.homeRoute(
     navigateToWrite: () -> Unit,
+    navigateToWriteWithArgs: (String) -> Unit,
     navigateToAuth: () -> Unit,
     onDataLoaded: () -> Unit
 ) {
@@ -151,7 +157,8 @@ fun NavGraphBuilder.homeRoute(
             onSignOutClicked = {
                 signOutDialogOpened = true
             },
-            navigateToWrite = navigateToWrite
+            navigateToWrite = navigateToWrite,
+            navigateToWriteWithArgs = navigateToWriteWithArgs
         )
 
         LaunchedEffect(key1 = Unit) {
@@ -191,7 +198,13 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
             defaultValue = null
         })
     ) {
+        val viewModel: WriteViewModel = viewModel()
+        val uiState = viewModel.uiState
         val pagerState = rememberPagerState(pageCount = { Mood.values().size })
+
+        LaunchedEffect(key1 = uiState) {
+            Log.d("SelectedDiary", "${uiState.selectedDiaryId}")
+        }
 
         WriteScreen(
             selectedDiary = null,
