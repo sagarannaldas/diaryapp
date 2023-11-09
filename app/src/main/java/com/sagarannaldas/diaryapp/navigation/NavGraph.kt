@@ -143,7 +143,7 @@ fun NavGraphBuilder.homeRoute(
 
         LaunchedEffect(key1 = diaries) {
             if (diaries !is RequestState.Loading) {
-                onDataLoaded
+                onDataLoaded()
             }
         }
 
