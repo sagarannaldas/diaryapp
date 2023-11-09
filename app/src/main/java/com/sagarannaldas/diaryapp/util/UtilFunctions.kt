@@ -15,9 +15,8 @@ fun RealmInstant.toInstant(): Instant {
 
 fun Instant.toRealmInstant(): RealmInstant {
     val sec: Long = this.epochSecond
-    // the values is always positive and lies in the range 0..999_999_999.
     val nano: Int = this.nano
-    return if (sec >= 0) { // for positive timestamps, conversion can happen directly
+    return if (sec >= 0) {
         RealmInstant.from(sec, nano)
     } else {
         RealmInstant.from(sec + 1, -1_000_000 + nano)

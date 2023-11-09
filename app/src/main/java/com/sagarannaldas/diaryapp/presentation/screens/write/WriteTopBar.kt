@@ -26,11 +26,10 @@ import androidx.compose.ui.text.style.TextAlign
 import com.sagarannaldas.diaryapp.model.Diary
 import com.sagarannaldas.diaryapp.presentation.components.DisplayAlertDialog
 import com.sagarannaldas.diaryapp.util.toInstant
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,12 +40,8 @@ fun WriteTopBar(
     onDeleteConfirmed: () -> Unit,
     onBackPressed: () -> Unit
 ) {
-    val currentDate by remember {
-        mutableStateOf(LocalDate.now())
-    }
-    val currentTime by remember {
-        mutableStateOf(LocalTime.now())
-    }
+    var currentDate by remember { mutableStateOf(LocalDate.now()) }
+    var currentTime by remember { mutableStateOf(LocalTime.now()) }
 
     val formattedDate = remember(key1 = currentDate) {
         DateTimeFormatter
@@ -61,12 +56,12 @@ fun WriteTopBar(
 
     val selectedDiaryDateTime = remember(selectedDiary) {
         if (selectedDiary != null) {
-            SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
-                .format(Date.from(selectedDiary.date.toInstant())).uppercase()
-        } else {
-            "Unknown"
-        }
+            DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a", Locale.getDefault())
+                .withZone(ZoneId.systemDefault())
+                .format(selectedDiary.date.toInstant())
+        } else "Unknown"
     }
+
     CenterAlignedTopAppBar(
         navigationIcon = {
             IconButton(onClick = onBackPressed) {

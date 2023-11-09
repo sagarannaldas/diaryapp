@@ -106,7 +106,6 @@ fun WriteContent(
                 ),
                 maxLines = 1,
                 singleLine = true
-
             )
 
             TextField(
