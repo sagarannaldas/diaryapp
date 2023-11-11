@@ -1,4 +1,4 @@
-package com.sagarannaldas.diaryapp.util
+package com.sagarannaldas.diaryapp.model
 
 sealed class RequestState<out T> {
     object Idle : RequestState<Nothing>()

@@ -2,7 +2,7 @@ package com.sagarannaldas.diaryapp.data.repository
 
 import com.sagarannaldas.diaryapp.model.Diary
 import com.sagarannaldas.diaryapp.util.Constants.APP_ID
-import com.sagarannaldas.diaryapp.util.RequestState
+import com.sagarannaldas.diaryapp.model.RequestState
 import com.sagarannaldas.diaryapp.util.toInstant
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query

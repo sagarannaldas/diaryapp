@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.sagarannaldas.diaryapp.data.repository.MongoDB
+import com.sagarannaldas.diaryapp.model.GalleryImage
 import com.sagarannaldas.diaryapp.model.Mood
 import com.sagarannaldas.diaryapp.presentation.components.DisplayAlertDialog
 import com.sagarannaldas.diaryapp.presentation.screens.auth.AuthenticationScreen
@@ -33,7 +34,8 @@ import com.sagarannaldas.diaryapp.presentation.screens.write.WriteScreen
 import com.sagarannaldas.diaryapp.presentation.screens.write.WriteViewModel
 import com.sagarannaldas.diaryapp.util.Constants.APP_ID
 import com.sagarannaldas.diaryapp.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
-import com.sagarannaldas.diaryapp.util.RequestState
+import com.sagarannaldas.diaryapp.model.RequestState
+import com.sagarannaldas.diaryapp.model.rememberGalleryState
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import io.realm.kotlin.mongodb.App
@@ -204,6 +206,7 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
         val context = LocalContext.current
         val uiState = viewModel.uiState
         val pagerState = rememberPagerState(pageCount = { Mood.values().size })
+        val galleryState = rememberGalleryState()
         val pageNumber by remember { derivedStateOf { pagerState.currentPage } }
 
 //        LaunchedEffect(key1 = uiState) {
@@ -214,6 +217,7 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
             uiState = uiState,
             moodName = { Mood.values()[pageNumber].name },
             pagerState = pagerState,
+            galleryState = galleryState,
             onTitleChanged = { viewModel.setTitle(title = it) },
             onDescriptionChanged = { viewModel.setDescription(description = it) },
             onDateTimeUpdated = { viewModel.updateDateTime(zonedDateTime = it) },
@@ -236,6 +240,14 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
                     onError = { message ->
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
+                )
+            },
+            onImageSelect ={
+                galleryState.addImage(
+                    GalleryImage(
+                        image = it,
+                        remoteImagePath = ""
+                    )
                 )
             }
         )
