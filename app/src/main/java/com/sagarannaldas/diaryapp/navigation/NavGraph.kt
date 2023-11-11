@@ -1,6 +1,6 @@
 package com.sagarannaldas.diaryapp.navigation
 
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.DrawerValue
@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -200,13 +201,14 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
         })
     ) {
         val viewModel: WriteViewModel = viewModel()
+        val context = LocalContext.current
         val uiState = viewModel.uiState
         val pagerState = rememberPagerState(pageCount = { Mood.values().size })
         val pageNumber by remember { derivedStateOf { pagerState.currentPage } }
 
-        LaunchedEffect(key1 = uiState) {
-            Log.d("SelectedDiary", "${uiState.selectedDiaryId}")
-        }
+//        LaunchedEffect(key1 = uiState) {
+//            Log.d("SelectedDiary", "${uiState.selectedDiaryId}")
+//        }
 
         WriteScreen(
             uiState = uiState,
@@ -215,14 +217,24 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
             onTitleChanged = { viewModel.setTitle(title = it) },
             onDescriptionChanged = { viewModel.setDescription(description = it) },
             onDateTimeUpdated = { viewModel.updateDateTime(zonedDateTime = it) },
-            onDeleteConfirmed = {},
+            onDeleteConfirmed = {
+                viewModel.deleteDiary(
+                    onSuccess = {
+                        Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
+                        onBackPressed()
+                    },
+                    onError = { message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
+                )
+            },
             onBackPressed = onBackPressed,
             onSaveClicked = {
                 viewModel.upsertDairy(
                     diary = it.apply { mood = Mood.values()[pageNumber].name },
                     onSuccess = { onBackPressed() },
                     onError = { message ->
-                        Log.d("MongoDBError", "writeRoute: $message")
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
                 )
             }
