@@ -214,6 +214,7 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
             pagerState = pagerState,
             onTitleChanged = { viewModel.setTitle(title = it) },
             onDescriptionChanged = { viewModel.setDescription(description = it) },
+            onDateTimeUpdated = { viewModel.updateDateTime(zonedDateTime = it) },
             onDeleteConfirmed = {},
             onBackPressed = onBackPressed,
             onSaveClicked = {

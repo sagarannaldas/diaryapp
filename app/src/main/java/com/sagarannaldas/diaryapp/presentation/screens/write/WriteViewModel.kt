@@ -1,6 +1,5 @@
 package com.sagarannaldas.diaryapp.presentation.screens.write
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,11 +11,13 @@ import com.sagarannaldas.diaryapp.model.Diary
 import com.sagarannaldas.diaryapp.model.Mood
 import com.sagarannaldas.diaryapp.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
 import com.sagarannaldas.diaryapp.util.RequestState
+import com.sagarannaldas.diaryapp.util.toRealmInstant
 import io.realm.kotlin.types.ObjectId
+import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.ZonedDateTime
 
 class WriteViewModel(
     private val savedStateHandle: SavedStateHandle
@@ -73,6 +74,10 @@ class WriteViewModel(
         uiState = uiState.copy(mood = mood)
     }
 
+    fun updateDateTime(zonedDateTime: ZonedDateTime) {
+        uiState = uiState.copy(updatedDateTime = zonedDateTime.toInstant().toRealmInstant())
+    }
+
     fun upsertDairy(
         diary: Diary,
         onSuccess: () -> Unit,
@@ -92,7 +97,11 @@ class WriteViewModel(
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
-        val result = MongoDB.insertDiary(diary = diary)
+        val result = MongoDB.insertDiary(diary = diary.apply {
+            if (uiState.updatedDateTime != null) {
+                date = uiState.updatedDateTime!!
+            }
+        })
         if (result is RequestState.Success) {
             withContext(Dispatchers.Main) {
                 onSuccess()
@@ -111,7 +120,8 @@ class WriteViewModel(
     ) {
         val result = MongoDB.updateDiary(diary = diary.apply {
             _id = ObjectId.Companion.from(uiState.selectedDiaryId!!)
-            date = uiState.selectedDiary!!.date
+            date =
+                if (uiState.updatedDateTime != null) uiState.updatedDateTime!! else uiState.selectedDiary!!.date
         })
         if (result is RequestState.Success) {
             withContext(Dispatchers.Main) {
@@ -130,5 +140,6 @@ data class UiState(
     val selectedDiary: Diary? = null,
     val title: String = "",
     val description: String = "",
-    val mood: Mood = Mood.Neutral
+    val mood: Mood = Mood.Neutral,
+    val updatedDateTime: RealmInstant? = null
 )
