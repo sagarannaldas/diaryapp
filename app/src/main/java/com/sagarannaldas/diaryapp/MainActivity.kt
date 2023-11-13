@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.FirebaseApp
 import com.sagarannaldas.diaryapp.navigation.Screen
 import com.sagarannaldas.diaryapp.navigation.SetupNavGraph
 import com.sagarannaldas.diaryapp.ui.theme.DiaryAppTheme
@@ -16,6 +17,7 @@ class MainActivity : ComponentActivity() {
     private var keepSplashOpened = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         installSplashScreen().setKeepOnScreenCondition {
             keepSplashOpened
         }

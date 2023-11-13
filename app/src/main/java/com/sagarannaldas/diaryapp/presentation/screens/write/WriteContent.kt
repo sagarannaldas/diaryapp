@@ -45,6 +45,7 @@ import com.sagarannaldas.diaryapp.model.Diary
 import com.sagarannaldas.diaryapp.model.GalleryState
 import com.sagarannaldas.diaryapp.model.Mood
 import com.sagarannaldas.diaryapp.presentation.components.GalleryUploader
+import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -163,7 +164,7 @@ fun WriteContent(
             Spacer(modifier = Modifier.height(12.dp))
             GalleryUploader(
                 galleryState = galleryState,
-                onAddClicked = {},
+                onAddClicked = { focusManager.clearFocus() },
                 onImageSelect = onImageSelect,
                 onImageClicked = {}
             )
@@ -178,6 +179,9 @@ fun WriteContent(
                             Diary().apply {
                                 this.title = uiState.title
                                 this.description = uiState.description
+                                this.images = galleryState.images.map {
+                                    it.remoteImagePath
+                                }.toRealmList()
                             }
                         )
                     } else {

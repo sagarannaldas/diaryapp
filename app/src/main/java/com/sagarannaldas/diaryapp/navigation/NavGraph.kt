@@ -1,5 +1,6 @@
 package com.sagarannaldas.diaryapp.navigation
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.rememberPagerState
@@ -103,7 +104,7 @@ fun NavGraphBuilder.authenticationRoute(
             authenticated = authenticated,
             oneTapSignInState = oneTapState,
             messageBarState = messageBarState,
-            onTokenIdReceived = { tokenId ->
+            onSuccessfulFirebaseSignIn = { tokenId ->
                 viewModel.signInWithMongoAtlas(
                     tokenId = tokenId,
                     onSuccess = {
@@ -115,6 +116,10 @@ fun NavGraphBuilder.authenticationRoute(
                         viewModel.setLoadingState(false)
                     }
                 )
+            },
+            onFailedFirebaseSignIn = { exception ->
+                messageBarState.addError(exception)
+                viewModel.setLoadingState(false)
             },
             onDialogDismissed = { message ->
                 messageBarState.addError(Exception(message))
@@ -205,8 +210,8 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
         val viewModel: WriteViewModel = viewModel()
         val context = LocalContext.current
         val uiState = viewModel.uiState
+        val galleryState = viewModel.galleryState
         val pagerState = rememberPagerState(pageCount = { Mood.values().size })
-        val galleryState = rememberGalleryState()
         val pageNumber by remember { derivedStateOf { pagerState.currentPage } }
 
 //        LaunchedEffect(key1 = uiState) {
@@ -242,12 +247,12 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
                     }
                 )
             },
-            onImageSelect ={
-                galleryState.addImage(
-                    GalleryImage(
-                        image = it,
-                        remoteImagePath = ""
-                    )
+            onImageSelect = {
+                val type = context.contentResolver.getType(it)?.split("/")?.last() ?: "/"
+                Log.d("NavGraph", "writeRoute: Uri: $it")
+                viewModel.addImage(
+                    image = it,
+                    imageType = type
                 )
             }
         )
