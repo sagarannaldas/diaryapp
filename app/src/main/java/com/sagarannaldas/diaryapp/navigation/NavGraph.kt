@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -24,8 +25,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.sagarannaldas.diaryapp.data.repository.MongoDB
-import com.sagarannaldas.diaryapp.model.GalleryImage
 import com.sagarannaldas.diaryapp.model.Mood
+import com.sagarannaldas.diaryapp.model.RequestState
 import com.sagarannaldas.diaryapp.presentation.components.DisplayAlertDialog
 import com.sagarannaldas.diaryapp.presentation.screens.auth.AuthenticationScreen
 import com.sagarannaldas.diaryapp.presentation.screens.auth.AuthenticationViewModel
@@ -35,8 +36,6 @@ import com.sagarannaldas.diaryapp.presentation.screens.write.WriteScreen
 import com.sagarannaldas.diaryapp.presentation.screens.write.WriteViewModel
 import com.sagarannaldas.diaryapp.util.Constants.APP_ID
 import com.sagarannaldas.diaryapp.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
-import com.sagarannaldas.diaryapp.model.RequestState
-import com.sagarannaldas.diaryapp.model.rememberGalleryState
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import io.realm.kotlin.mongodb.App
@@ -207,7 +206,7 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
             defaultValue = null
         })
     ) {
-        val viewModel: WriteViewModel = viewModel()
+        val viewModel: WriteViewModel = hiltViewModel()
         val context = LocalContext.current
         val uiState = viewModel.uiState
         val galleryState = viewModel.galleryState

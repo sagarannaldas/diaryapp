@@ -12,6 +12,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.sagarannaldas.diaryapp.data.database.ImagesToUploadDao
+import com.sagarannaldas.diaryapp.data.database.entity.ImageToUpload
 import com.sagarannaldas.diaryapp.data.repository.MongoDB
 import com.sagarannaldas.diaryapp.model.Diary
 import com.sagarannaldas.diaryapp.model.GalleryImage
@@ -21,6 +23,7 @@ import com.sagarannaldas.diaryapp.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
 import com.sagarannaldas.diaryapp.model.RequestState
 import com.sagarannaldas.diaryapp.util.fetchImagesFromFirebase
 import com.sagarannaldas.diaryapp.util.toRealmInstant
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.realm.kotlin.types.ObjectId
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.Dispatchers
@@ -29,8 +32,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 
+@HiltViewModel
 class WriteViewModel(
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val imagesToUploadDao: ImagesToUploadDao
 ) : ViewModel() {
     val galleryState = GalleryState()
     var uiState by mutableStateOf(UiState())
@@ -202,6 +207,20 @@ class WriteViewModel(
         galleryState.images.forEach { galleryImage ->
             val imagePath = storage.child(galleryImage.remoteImagePath)
             imagePath.putFile(galleryImage.image)
+                .addOnProgressListener {
+                    val sessionUri = it.uploadSessionUri
+                    if (sessionUri != null) {
+                        viewModelScope.launch(Dispatchers.IO) {
+                            imagesToUploadDao.addImageToUpload(
+                                ImageToUpload(
+                                    remoteImagePath = galleryImage.remoteImagePath,
+                                    imageUri = galleryImage.image.toString(),
+                                    sessionUri = sessionUri.toString()
+                                )
+                            )
+                        }
+                    }
+                }
         }
     }
 
