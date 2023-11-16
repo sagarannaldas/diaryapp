@@ -14,12 +14,14 @@ import com.sagarannaldas.diaryapp.navigation.SetupNavGraph
 import com.sagarannaldas.diaryapp.ui.theme.DiaryAppTheme
 import com.sagarannaldas.diaryapp.util.Constants.APP_ID
 import com.sagarannaldas.diaryapp.util.retryUploadingImageToFirebase
+import dagger.hilt.android.AndroidEntryPoint
 import io.realm.kotlin.mongodb.App
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var imagesToUploadDao: ImagesToUploadDao
