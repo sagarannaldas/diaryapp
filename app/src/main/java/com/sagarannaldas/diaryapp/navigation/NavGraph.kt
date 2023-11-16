@@ -255,7 +255,7 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
                 )
             },
             onImageDeleteClicked = {
-
+                galleryState.removeImage(it)
             }
         )
     }
