@@ -8,4 +8,5 @@ object Constants {
 
     const val IMAGES_DATABASE = "images_db"
     const val IMAGES_TO_UPLOAD_TABLE = "images_to_upload_table"
+    const val IMAGES_TO_DELETE_TABLE = "images_to_delete_table"
 }

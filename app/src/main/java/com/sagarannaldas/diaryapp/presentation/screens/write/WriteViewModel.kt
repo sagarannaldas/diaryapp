@@ -12,7 +12,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.sagarannaldas.diaryapp.data.database.ImagesToDeleteDao
 import com.sagarannaldas.diaryapp.data.database.ImagesToUploadDao
+import com.sagarannaldas.diaryapp.data.database.entity.ImageToDelete
 import com.sagarannaldas.diaryapp.data.database.entity.ImageToUpload
 import com.sagarannaldas.diaryapp.data.repository.MongoDB
 import com.sagarannaldas.diaryapp.model.Diary
@@ -36,7 +38,8 @@ import javax.inject.Inject
 @HiltViewModel
 class WriteViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val imagesToUploadDao: ImagesToUploadDao
+    private val imagesToUploadDao: ImagesToUploadDao,
+    private val imagesToDeleteDao: ImagesToDeleteDao
 ) : ViewModel() {
     val galleryState = GalleryState()
     var uiState by mutableStateOf(UiState())
@@ -200,10 +203,24 @@ class WriteViewModel @Inject constructor(
         if (images != null) {
             images.forEach { remotePath ->
                 storage.child(remotePath).delete()
+                    .addOnFailureListener {
+                        viewModelScope.launch(Dispatchers.IO) {
+                            imagesToDeleteDao.addImageToDelete(
+                                ImageToDelete(remoteImagePath = remotePath)
+                            )
+                        }
+                    }
             }
         } else {
-            galleryState.imagesToBeDeleted.map { it.remoteImagePath }.forEach {
-                storage.child(it).delete()
+            galleryState.imagesToBeDeleted.map { it.remoteImagePath }.forEach { remotePath ->
+                storage.child(remotePath).delete()
+                    .addOnFailureListener {
+                        viewModelScope.launch(Dispatchers.IO) {
+                            imagesToDeleteDao.addImageToDelete(
+                                ImageToDelete(remoteImagePath = remotePath)
+                            )
+                        }
+                    }
             }
         }
     }
