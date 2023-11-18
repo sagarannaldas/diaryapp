@@ -1,7 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
+//    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("io.realm.kotlin")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
@@ -34,18 +35,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
         isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -81,7 +82,7 @@ dependencies {
 
     // Room components
     implementation ("androidx.room:room-runtime:2.6.0")
-    kapt ("androidx.room:room-compiler:2.6.0")
+    ksp ("androidx.room:room-compiler:2.6.0")
     implementation ("androidx.room:room-ktx:2.6.0")
 
     // Runtime Compose
@@ -97,7 +98,7 @@ dependencies {
 
     // Dagger Hilt
     implementation ("com.google.dagger:hilt-android:2.48")
-    kapt ("com.google.dagger:hilt-compiler:2.48")
+    ksp ("com.google.dagger:hilt-compiler:2.48")
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     // Coil
