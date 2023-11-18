@@ -45,6 +45,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun SetupNavGraph(
     startDestination: String,
@@ -166,6 +167,9 @@ fun NavGraphBuilder.homeRoute(
                     drawerState.open()
                 }
             },
+            dateIsSelected = homeViewModel.dateIsSelected,
+            onDateSelected = { homeViewModel.getDiaries(it) },
+            onDateReset = {homeViewModel.getDiaries()},
             onSignOutClicked = {
                 signOutDialogOpened = true
             },

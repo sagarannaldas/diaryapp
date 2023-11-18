@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import com.sagarannaldas.diaryapp.R
 import com.sagarannaldas.diaryapp.data.repository.Diaries
 import com.sagarannaldas.diaryapp.model.RequestState
+import java.time.ZonedDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -50,6 +51,9 @@ fun HomeScreen(
     diaries: Diaries,
     drawerState: DrawerState,
     onMenuClicked: () -> Unit,
+    dateIsSelected: Boolean,
+    onDateSelected: (ZonedDateTime) -> Unit,
+    onDateReset: () -> Unit,
     onSignOutClicked: () -> Unit,
     onDeleteAllClicked: () -> Unit,
     navigateToWrite: () -> Unit,
@@ -61,15 +65,18 @@ fun HomeScreen(
         drawerState = drawerState,
         onSignOutClicked = onSignOutClicked,
         onDeleteAllClicked = onDeleteAllClicked
-        ) {
+    ) {
 
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 HomeTopBar(
                     scrollBehavior = scrollBehavior,
-                    onMenuClicked = onMenuClicked
-                )
+                    onMenuClicked = onMenuClicked,
+                    dateIsSelected = dateIsSelected,
+                    onDateSelected = onDateSelected,
+                    onDateReset = onDateReset,
+                    )
             },
             floatingActionButton = {
                 FloatingActionButton(
@@ -170,7 +177,10 @@ fun NavigationDrawer(
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
-                                Text(text = "Delete All Diaries", color = MaterialTheme.colorScheme.onSurface)
+                                Text(
+                                    text = "Delete All Diaries",
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
                             }
                         },
                         selected = false,
