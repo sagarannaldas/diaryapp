@@ -2,8 +2,8 @@ package com.sagarannaldas.diaryapp.data.repository
 
 import com.sagarannaldas.diaryapp.model.Diary
 import com.sagarannaldas.diaryapp.model.RequestState
-import io.realm.kotlin.types.ObjectId
 import kotlinx.coroutines.flow.Flow
+import org.mongodb.kbson.ObjectId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 

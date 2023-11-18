@@ -113,11 +113,13 @@ fun WriteContent(
                 value = title,
                 onValueChange = onTitleChanged,
                 placeholder = { Text(text = "Title") },
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Unspecified,
-                    disabledIndicatorColor = Color.Unspecified,
                     unfocusedIndicatorColor = Color.Unspecified,
+                    disabledIndicatorColor = Color.Unspecified,
                     focusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                 ),
@@ -141,11 +143,13 @@ fun WriteContent(
                 value = description,
                 onValueChange = onDescriptionChanged,
                 placeholder = { Text(text = "Tell me about it.") },
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Unspecified,
-                    disabledIndicatorColor = Color.Unspecified,
                     unfocusedIndicatorColor = Color.Unspecified,
+                    disabledIndicatorColor = Color.Unspecified,
                     focusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                 ),
